@@ -10,7 +10,7 @@ So we built it.
 
 ### Disclaimer
 
-The API is really REST-_ish_ and not pure REST. The verbs supported are a little more than what pure REST would recommend. But the extra verbs are quite convenient as we found out.
+The API is really REST-_ish_ and not pure REST. The verbs supported are a little more than what pure REST would recommend. But the extra support from the verbs are quite convenient as we found out.
 
 ## Installation
 ```
@@ -26,7 +26,7 @@ After installation, just run:
 npx rest-on-mongo
 ```
 
-You will now have a full-fledged unauthenticated REST API server listening on port 8000 which will give you access to a database called `test` in a MongoDB instance running on the localhost. The port, database and MongoDB instance were defaulted to these values in the absence of any configuration.
+You will now have a full-fledged REST API server, using the default configuration: an unauthenticated server on port 8000 which will give you access to a database called `test` in a MongoDB instance running on the localhost.
 
 ### Try it out
 
@@ -100,7 +100,7 @@ BASE=/api/v1
 READ_ONLY=yes
 ```
 
-This will configure a server with no authentication in the single database mode, so no prefix is needed to select the database. But a standard base prefix `api/v1` is needed for all APIs. Further, HTTP methods other than GET will not be supported.
+This will configure a server with no authentication in the single database mode, so no prefix is needed to select the database. But a standard base prefix `api/v1` is needed for all APIs. Further, HTTP methods other than GET will not be supported because `READ_ONLY` was set to `yes`.
 
 In this mode, to get a document, this is what you would do:
 

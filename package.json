@@ -1,6 +1,6 @@
 {
   "name": "rest-on-mongo",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "A simple REST API layer over MongoDB",
   "main": "index.js",
   "scripts": {
@@ -19,7 +19,8 @@
     "MongoDB Wrapper",
     "mongo",
     "mongodb"
-  ],"bugs": {
+  ],
+  "bugs": {
     "url": "https://github.com/agrostar/rest-on-mongo/issues"
   },
   "homepage": "https://github.com/agrostar/rest-on-mongo",
