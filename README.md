@@ -115,9 +115,9 @@ curl http://localhost:8000/api/v1/example/1
    * None of the environment variables are required. A server as in the Quick Start section above will be started if no environment variables are found.
    * Since the shell does not allow usage of the dash (`-`) character in environment variable names, you should use an `_` instead of `-` in the names where there is a dash in the prefix (which is indeed allowed).
 
-## Using `rest-on-mongo` as a library
+## Using rest-on-mongo as a library
 
-You may want to create your own server if you need something different from the `rest-on-mongo` built-in server. For example, you may already have a server and you'd like an additional router endpoint. Or, you may not like the default authorization mechanism, and you want to use your own.
+You may want to create your own server if you need something different from rest-on-mongo's built-in server. For example, you may already have a server and you'd like an additional router endpoint. Or, you may not like the default authorization mechanism, and you want to use your own.
 
 rest-on-mongo exports three things:
 
@@ -125,7 +125,7 @@ rest-on-mongo exports three things:
 1. `restRoutes`: The REST routes, a lower level access to the REST handlers. Methods available are `restRoutes.all()` and `restRoutes.readOnly()`.
 1. `tokenAuth`: An authentication middleware generator function. Pass a string to this function to obtain a function that authenticates against this string. An HTTP `Authorization` Header of type `Bearer` will be expected in all requests.
 
-### Example: mimic `rest-on-mongo` command line
+### Example: mimic rest-on-mongo command line
 
 To replicate the behaviour of the `rest-on-mongo` command-line, you could do the following:
 ```
@@ -191,8 +191,8 @@ app.listen(8000, () => {
 |        |                  | `[{...}, ...]`           | Inserts many documents |
 | GET    | /collection/_id  |                          | Gets a single document |
 | GET    | /collection      |                          | Gets documents matching the query-string filter |
-| PATCH  | /collection/_id  | `{...}`                  | Batch updates document at `_id` using MongoDB `$set` |
-| PATCH  | /collection      | `[{"_id": 1, ...}, ...]` | Updates multiple documents |
+| PATCH  | /collection/_id  | `{...}`                  | Udates document at `_id` using MongoDB `$set` |
+| PATCH  | /collection      | `[{"_id": 1, ...}, ...]` | Batch updates multiple documents |
 | PUT    | /collection/_id  | `{...}`                  | Replaces document at `_id` |
 | PUT    | /collection      | `[{"_id": 1, ...}, ...]` | Batch replaces multiple documents |
 | DELETE | /collection/_id  |                          | Deletes document at `_id` |
