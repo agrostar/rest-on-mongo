@@ -52,7 +52,7 @@ const toReplaceMany = [
 let createdObjectId;
 
 const dbUrl = 'mongodb://localhost';
-const dbName = 'mongorest';
+const dbName = 'rest-on-mongo';
 const collection = 'test';
 const app = express();
 let client;

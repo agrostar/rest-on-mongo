@@ -10,7 +10,7 @@ So we built it.
 
 ### Disclaimer
 
-The API is really REST-_ish_ and not pure REST. The verbs supported are a little more than what pure REST would recommend. But it is rather convenient.
+The API is really REST-_ish_ and not pure REST. The verbs supported are a little more than what pure REST would recommend. But the extra verbs are quite convenient as we found out.
 
 ## Installation
 ```
@@ -70,15 +70,15 @@ Contents of the `.env` file:
 ```
 AUTH_TOKEN=secret
 PORT=3000
-PREFIXES=local-test,local-content,remote-test,remote-content
-# SERVER_local-test=mongodb://localhost
-# DB_local-test=test
-# SERVER_local-content=mongodb://localhost
-DB_local-content=content
-SERVER_remote-test=mongodb://user:password@db.example.com
-# DB_remote-test=test
-SERVER_remote-content=mongodb://user:password@db.example.com
-DB_remote-content=content
+PREFIXES=localtest,localcontent,remotetest,remotecontent
+# SERVER_localtest=mongodb://localhost
+# DB_localtest=test
+# SERVER_localcontent=mongodb://localhost
+DB_localcontent=content
+SERVER_remotetest=mongodb://user:password@db.example.com
+# DB_remotetest=test
+SERVER_remotecontent=mongodb://user:password@db.example.com
+DB_remotecontent=content
 ```
 
 This will configure a server in the multiple databases mode. Now, to access the `example` collection in the local `test` database, you will need to do the following:
@@ -113,6 +113,7 @@ curl http://localhost:8000/api/v1/example/1
    * If `PREFIXES` is defined, the variables `SERVER` and `DB` will be ignored, giving preference to the multiple database mode of operation.
    * Multiple prefixes can connect to the same server+database. Although supported, this is useless.
    * None of the environment variables are required. A server as in the Quick Start section above will be started if no environment variables are found.
+   * Since the shell does not allow usage of the dash (`-`) character in environment variable names, you should use an `_` instead of `-` in the names where there is a dash in the prefix (which is indeed allowed).
 
 ## Using `rest-on-mongo` as a library
 

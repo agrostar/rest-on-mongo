@@ -1,5 +1,5 @@
 {
-  "name": "mongorest",
+  "name": "rest-on-mongo",
   "version": "1.0.0",
   "description": "A simple REST API layer over MongoDB",
   "main": "index.js",
@@ -11,12 +11,12 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/agrostar/mongorest"
+    "url": "https://github.com/agrostar/rest-on-mongo"
   },
   "bugs": {
-    "url": "https://github.com/agrostar/mongorest/issues"
+    "url": "https://github.com/agrostar/rest-on-mongo/issues"
   },
-  "homepage": "https://github.com/agrostar/mongorest",
+  "homepage": "https://github.com/agrostar/rest-on-mongo",
   "license": "MIT",
   "dependencies": {
     "JSONStream": "^1.3.5",
@@ -35,6 +35,6 @@
     "supertest": "^4.0.2"
   },
   "bin": {
-    "mongorest": "./bin/mongorest"
+    "rest-on-mongo": "./bin/rest-on-mongo"
   }
 }
