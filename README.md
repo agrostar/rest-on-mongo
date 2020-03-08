@@ -1,6 +1,6 @@
-# mongorest
+# rest-on-mongo
 
-mongorest is a REST API layer over MongoDB.
+rest-on-mongo is a REST API layer over MongoDB.
 
 ## About
 
@@ -14,16 +14,16 @@ The API is really REST-_ish_ and not pure REST. The verbs supported are a little
 
 ## Installation
 ```
-npm install mongorest
+npm install rest-on-mongo
 ```
 
-There are two ways to use mongorest. You can just run the built-in server (which should work for most needs, because it has lots of configuration options), or you can use it as a library and build your own server.
+There are two ways to use rest-on-mongo. You can just run the built-in server (which should work for most needs, because it has lots of configuration options), or you can use it as a library and build your own server.
 
 ## Using the built-in server
 
 After installation, just run:
 ```
-npx mongorest
+npx rest-on-mongo
 ```
 
 You will now have a full-fledged unauthenticated REST API server listening on port 8000 which will give you access to a database called `test` in a MongoDB instance running on the localhost. The port, database and MongoDB instance were defaulted to these values in the absence of any configuration.
@@ -114,21 +114,21 @@ curl http://localhost:8000/api/v1/example/1
    * Multiple prefixes can connect to the same server+database. Although supported, this is useless.
    * None of the environment variables are required. A server as in the Quick Start section above will be started if no environment variables are found.
 
-## Using `mongorest` as a library
+## Using `rest-on-mongo` as a library
 
-You may want to create your own server if you need something different from the `mongorest` built-in server. For example, you may already have a server and you'd like an additional router endpoint. Or, you may not like the default authorization mechanism, and you want to use your own.
+You may want to create your own server if you need something different from the `rest-on-mongo` built-in server. For example, you may already have a server and you'd like an additional router endpoint. Or, you may not like the default authorization mechanism, and you want to use your own.
 
-`mongorest` exports three things:
+rest-on-mongo exports three things:
 
 1. `server`: The entire server, which can be used to start the server, or mount the middleware in your own app. Methods available are `server.start()` and `server.routes()`.
 1. `restRoutes`: The REST routes, a lower level access to the REST handlers. Methods available are `restRoutes.all()` and `restRoutes.readOnly()`.
 1. `tokenAuth`: An authentication middleware generator function. Pass a string to this function to obtain a function that authenticates against this string. An HTTP `Authorization` Header of type `Bearer` will be expected in all requests.
 
-### Example: mimic `mongorest` command line
+### Example: mimic `rest-on-mongo` command line
 
-To replicate the behaviour of the `mongorest` command-line, you could do the following:
+To replicate the behaviour of the `rest-on-mongo` command-line, you could do the following:
 ```
-const { server } = require('mongorest');
+const { server } = require('rest-on-mongo');
 server.start();
 ```
 
@@ -136,13 +136,13 @@ server.start();
 
 To mount the REST APIs in your own app, rather than start an independent server that respects all the environment variable based configuration, you could do:
 ```
-const { server } = require('mongorest');
+const { server } = require('rest-on-mongo');
 const express = require('express');
 const myApp = require('./app'); // Your app with its own handlers
 
 const app = express();
 app.use('/app', myApp); // mount your app on /app
-app.use('/dbapi', server.routes()); // mount mongorest on /dbapi
+app.use('/dbapi', server.routes()); // mount rest-on-mongo on /dbapi
 ```
 
 ### Example: do it yourself
@@ -151,13 +151,13 @@ To get an even lower level access to the REST routes, you could do:
 ```
 const mongodb = require('mongodb');
 const express = require('express');
-const { restRoutes, tokenAuth } = require('mongorest');
+const { restRoutes, tokenAuth } = require('rest-on-mongo');
 const myApp = require('./app'); // Your app with its own handlers
 
 const app = express();
 app.use('/app', myApp); // mount your app on /app
 
-// Authenticate using mongorest's default auth mechanism
+// Authenticate using rest-on-mongo's default auth mechanism
 app.use('/dbapi', tokenAuth('somesecret'));
 
 // Inject a database connection, this is required!
