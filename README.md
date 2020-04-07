@@ -1,5 +1,8 @@
 # rest-on-mongo
 
+[![npm version](https://badge.fury.io/js/rest-on-mongo.svg)](https://www.npmjs.com/package/rest-on-mongo)
+[![downloads](https://img.shields.io/npm/dt/rest-on-mongo.svg)](https://npmjs.org/rest-on-mongo)
+
 rest-on-mongo is a REST API layer over MongoDB.
 
 ## About
@@ -10,7 +13,7 @@ So we built it.
 
 ### Disclaimer
 
-The API is really REST-_ish_ and not pure REST. The verbs supported are a little more than what pure REST would recommend. But the extra support from the verbs are quite convenient as we found out.
+The API is really REST-_ish_ and not pure REST. The verbs supported are a little more than what pure REST would recommend. But the extra support is quite convenient as we found out.
 
 ## Installation
 ```
@@ -125,7 +128,7 @@ rest-on-mongo exports three things:
 1. `restRoutes`: The REST routes, a lower level access to the REST handlers. Methods available are `restRoutes.all()` and `restRoutes.readOnly()`.
 1. `tokenAuth`: An authentication middleware generator function. Pass a string to this function to obtain a function that authenticates against this string. An HTTP `Authorization` Header of type `Bearer` will be expected in all requests.
 
-### Example: mimic rest-on-mongo command line
+### Example: mimic the rest-on-mongo command line
 
 To replicate the behaviour of the `rest-on-mongo` command-line, you could do the following:
 ```
@@ -133,9 +136,9 @@ const { server } = require('rest-on-mongo');
 server.start();
 ```
 
-### Example: add rest REST APIs to an existing app
+### Example: add rest-on-mongo's REST APIs to an existing app
 
-To mount the REST APIs in your own app, rather than start an independent server that respects all the environment variable based configuration, you could do:
+To mount the REST APIs in your own app (using the environment variables configuration), rather than start an independent server, you could do:
 ```
 const { server } = require('rest-on-mongo');
 const express = require('express');
