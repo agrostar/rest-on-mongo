@@ -6,7 +6,14 @@ const { MongoClient } = require('mongodb');
 const restRoutes = require('../lib/restRoutes');
 
 /*
- * Run this script using "mocha test/handlers" from the project directory.
+ * Run this script using "npx mocha" from the project directory. If you want to
+ * run selective tests, do npx mocha --grep Create.
+ *
+ * TODO: need tests for long, object ID and int - need to call mongo client directly
+ * for these.
+ *
+ * TODO: reorganize this so that each test can be run independently. Now, it relies on
+ * the sequence, read tests depend on the Create tests. This is not great.
  */
 
 /* global describe it before after */
@@ -14,7 +21,10 @@ const restRoutes = require('../lib/restRoutes');
 const toCreate = {
   _id: 'id-1',
   testDecimal: 1.5,
-  testNumber: 10,
+  testNumber: 11,
+  testLong: '$Long:1584963168000',
+  testObjectId: '$ObjectId:5ec7cb151a1878fbefce4119',
+  testInt: '$Int:23423',
   testString: 'AgroStar',
   autoId: false,
 };
