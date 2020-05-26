@@ -1,16 +1,13 @@
 require('dotenv').config();
-const { expect } = require('chai');
+const { expect, assert } = require('chai');
 const request = require('supertest');
 const express = require('express');
-const { MongoClient } = require('mongodb');
+const { MongoClient, Long } = require('mongodb');
 const restRoutes = require('../lib/restRoutes');
 
 /*
  * Run this script using "npx mocha" from the project directory. If you want to
  * run selective tests, do npx mocha --grep Create.
- *
- * TODO: need tests for long, object ID and int - need to call mongo client directly
- * for these.
  *
  * TODO: reorganize this so that each test can be run independently. Now, it relies on
  * the sequence, read tests depend on the Create tests. This is not great.
@@ -18,13 +15,17 @@ const restRoutes = require('../lib/restRoutes');
 
 /* global describe it before after */
 
+const dateFnString = '2019-01-01T15:17:19';
+const dateAutoString = '2020-02-02T12:14:16';
+
 const toCreate = {
   _id: 'id-1',
   testDecimal: 1.5,
   testNumber: 11,
-  testLong: '$Long:1584963168000',
+  testLong: '$Long:1584963168123123123',
   testObjectId: '$ObjectId:5ec7cb151a1878fbefce4119',
-  testInt: '$Int:23423',
+  testDateFn: `$Date:${dateFnString}`,
+  testAutoDate: dateAutoString,
   testString: 'AgroStar',
   autoId: false,
 };
@@ -66,12 +67,13 @@ const dbName = 'rest-on-mongo';
 const collection = 'test';
 const app = express();
 let client;
+let db;
 
 describe('All handler tests', () => {
   before(async () => {
     client = new MongoClient(dbUrl, { useNewUrlParser: true, useUnifiedTopology: true });
     await client.connect();
-    const db = client.db(dbName);
+    db = client.db(dbName);
     app.use('/', (req, res, next) => {
       req.db = db;
       next();
@@ -82,7 +84,7 @@ describe('All handler tests', () => {
     client.close();
   });
 
-  it('should clear collection', async () => {
+  it('Init - clear collection', async () => {
     const res = await request(app)
       .delete(`/${collection}`);
     expect(res.statusCode).to.equal(200);
@@ -97,6 +99,12 @@ describe('All handler tests', () => {
       expect(res.statusCode).to.equal(200);
       expect(res.body.result.ok).to.equal(1);
       expect(res.body.insertedCount).to.equal(1);
+
+      const created = await db.collection(collection).findOne({ _id: 'id-1' });
+      expect(created.testObjectId).to.be.a('Object').and.have.property('_bsontype', 'ObjectID');
+      assert(created.testLong.equals(Long.fromString('1584963168123123123')), 'Not a long');
+      expect(created.testDateFn.getTime()).to.equal(new Date(dateFnString).getTime());
+      expect(created.testAutoDate.getTime()).to.equal(new Date(dateAutoString).getTime());
     });
 
     it('should create many', async () => {

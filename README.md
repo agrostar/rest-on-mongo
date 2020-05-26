@@ -344,3 +344,21 @@ Returns:
   deletedCount: 1
 }
 ```
+
+## BSON data types
+
+Since JSON doesn't support BSON data types like ObjectID, long etc, we need special ways to be able to create documents with values which are of these types. To create these data types, you can use strings starting with a single `$`, followed by a conversion function name, followed by a `:` and finally the value as a string.
+
+We will add more data types, but for the moment, this is how you can create some of these data types.
+
+| Type       | Function  | Example                                      | Resulting Value |
+| ---------- | --------- | -------------------------------------------- | ----------------
+| ObjectId   | ObjectId  | { id: "$ObjectId:5ecce33370eef71be8ba4b5a" } | ObjectId("5ecce33370eef71be8ba4b5a") |
+| NumberLong | Long      | { num: "$Long:1584963168000" }               | NumberLong(1584963168000) |
+| Date       | Date      | { when: "$Date:2020-01-01" }                 | 2020-01-01T00:00:00.000Z |
+|            |           | { when: "$Date:2020-01-01T23:12:45Z" }       | 2020-01-01T23:12:45.000Z |
+| String     | String    | { asis: "$String:$Long:23423" }              | "$Long:23423" |
+
+The function names are case insensitive. If the function name does not match any of the above, or if there is no `:` character in the string, the original string value will be retained. The function `$String` lets you create a string value exactly as specified, without giving special interpretations like the first three cases.
+
+In addition, if the value is a string and matches an ISO Date pattern like `2020-01-01T23:12:45Z` it will automatically be converted to a date, even without a function specification.
