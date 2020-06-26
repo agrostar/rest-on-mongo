@@ -39,14 +39,14 @@ You will now have a full-fledged REST API server, using the default configuratio
 
 Insert a document in a collection called `example` in the database `test`:
 ```
-curl -X POST --data '{ "_id": 1, "value": "test" }' http://localhost:8000/example
+curl -X POST --data '{ "_id": 1, "value": "some value" }' http://localhost:8000/example
 ```
 
 Read back the document from the collection:
 ```
 curl http://localhost:8000/example/1
 ```
-This will return the document `{ "_id": 1, "value": "test" }` which was just inserted.
+This will return the document `{ "_id": 1, "value": "some value" }` which was just inserted.
 
 ### Configuration
 
@@ -150,7 +150,7 @@ const myApp = require('./app'); // Your app with its own handlers
 
 const app = express();
 app.use('/app', myApp); // mount your app on /app
-app.use('/dbapi', server.routes()); // mount rest-on-mongo on /dbapi
+app.use('/dbadmin', server.routes()); // mount rest-on-mongo on /dbadmin
 ```
 
 ### Example: do it yourself
@@ -166,19 +166,19 @@ const app = express();
 app.use('/app', myApp); // mount your app on /app
 
 // Authenticate using rest-on-mongo's default auth mechanism
-app.use('/dbapi', tokenAuth('somesecret'));
+app.use('/dbadmin', tokenAuth('somesecret'));
 
 // Inject a database connection, this is required!
 const client = new MongoClient('mongodb://db.example.com');
 client.connect();
 const db = client.db('mydatabase');
-app.use('/dbapi', (req, res, next) => {
+app.use('/dbadmin', (req, res, next) => {
   req.db = db;
   next();
 }
 
 // Install all the library's REST routes
-app.use('/dbapi', restRoutes.all());  // Or, use restRoutes.readOnly()
+app.use('/dbadmin', restRoutes.all());  // Or, use restRoutes.readOnly()
 
 // Start the server
 app.listen(8000, () => {
@@ -301,7 +301,7 @@ Failure response (Missing IDs):
 }
 ```
 
-### Update (PUT)
+### Replace (PUT)
 
 Replaces one more more documents with the given document(s). This is also a bulk write operation like the Update (PATCH) operation.
 
@@ -353,11 +353,13 @@ Returns:
 
 ## BSON data types
 
-The request body is parsed using [mongodb-extjson](https://github.com/mongodb-js/mongodb-extjson/tree/v3.0.3), so data types that are native to MongoDB but not supported by the JSON format can also be specified. The [Extended JSON documentation](https://github.com/mongodb/specifications/blob/master/source/extended-json.rst) has a detailed specification of all data types. A few common ones are described here:
+The request body is parsed using [mongodb-extjson](https://github.com/mongodb-js/mongodb-extjson/tree/v3.0.3), so data types that are native to MongoDB but not supported by the JSON format can also be specified. The [Extended JSON documentation](https://github.com/mongodb/specifications/blob/master/source/extended-json.rst) has a detailed specification of all the data types.
 
-| Type       | Example                                                | Resulting Value |
-| ---------- | ------------------------------------------------------ | ---------------- |
-| ObjectId   | { id: { "$oid: "5ecce33370eef71be8ba4b5a" }            | ObjectId("5ecce33370eef71be8ba4b5a") |
-| NumberLong | { num: { "$numberLong": "1584963168000" }              | NumberLong(1584963168000) |
-| Date       | { when: { "$date": "2020-01-01T12:13:14.123Z" }        | ISODate("2020-01-01T12:13:14.123Z") |
-|            | { when: { "$date": { "numberLong": "1593159811000" } } | ISODate("2020-06-26T08:23:31Z") |
+A few common ones are described here:
+
+| Type     | Example                                               | Resulting Value |
+| ---------| ----------------------------------------------------- | ---------------- |
+| ObjectId | { "id": { "$oid: "5ecce33370eef71be8ba4b5a" }         | ObjectId("5ecce33370eef71be8ba4b5a") |
+| Long     | { "n": { "$numberLong": "1584963168000" }             | NumberLong(1584963168000) |
+| Date     | { "t": { "$date": "2020-01-01T12:13:14.123Z" }        | ISODate("2020-01-01T12:13:14.123Z") |
+|          | { "d": { "$date": { "numberLong": "1593159811000" } } | ISODate("2020-06-26T08:23:31Z") |
