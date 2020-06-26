@@ -11,6 +11,10 @@ The need for a REST API interface to MongoDB came up when we wanted to access ou
 
 So we built it.
 
+### Upgrading from v1.x.x
+
+v2.0 has breaking changes in the way BSON data types are handled. We no longer support automatic conversion of date-like strings to Date objects. The v1.0 functions for converting strings starting with a `$` character to specific data types are also no longer supported.
+
 ### Disclaimer
 
 The API is really REST-_ish_ and not pure REST. The verbs supported are a little more than what pure REST would recommend. But the extra support is quite convenient as we found out.
@@ -262,7 +266,7 @@ Returns one ore more objects from a collection.
 Variants:
 
 1. `collection/_id`: Gets the single document.
-1. `collection`, `[?<filter>]`: We use [query-params-mongo](https://www.npmjs.com/package/query-params-mongo) for parsing the filter specification. Note that this has sorting and pagination support too.
+1. `collection`, `[?<query>]`: We use [query-params-mongo](https://www.npmjs.com/package/query-params-mongo) for parsing the filter specification. Note that this has sorting and pagination support too. For the filter, the MongoDB filter can be specified directly in a parameter named `__filter`.
 
 Returns:
 
@@ -304,16 +308,18 @@ Replaces one more more documents with the given document(s). This is also a bulk
 Variants:
 
 1. `collection/_id`: Replaces a single document identified by `_id` with the one given in the request body.
-2. `collection`: The request body is expected to be an array of objects, with each object containing an `_id` field, which will identify the object and replace it with the given one.
+2. `collection`: The request body is expected to be an array of objects, with each object containing an `_id` field, which will identify the document and replace it with the given one. Non-existent documents will be created, as in an upsert operation.
 
 Success response:
 ```
 {
   result: {
-    ok: 1
+    ok: 1,
+    nModified: 0,
+    nUpserted: 1
   },
   matchedCount: 0,
-  modifiedCount: 0
+  modifiedCount: 1
 }
 ```
 Failure response (Missing IDs):
@@ -332,7 +338,7 @@ Deletes one or more documents. To delete multiple documents, an optional filter 
 Variants:
 
 1. `collection/_id`: Deletes a single document identified by `_id`.
-1. `collection`: Clears the entire collection or a filtered subset described by the filter in the query params. We use [query-params-mongo](https://www.npmjs.com/package/query-params-mongo) for parsing the query string to get a filter.
+1. `collection`, `[?<query>]`: Clears the entire collection or a filtered subset described by the filter in the query params. We use [query-params-mongo](https://www.npmjs.com/package/query-params-mongo) for parsing the query string to get a filter. Or, the MongoDB filter can be specified directly in a parameter named `__filter`.
 
 Returns:
 
@@ -347,18 +353,11 @@ Returns:
 
 ## BSON data types
 
-Since JSON doesn't support BSON data types like ObjectID, long etc, we need special ways to be able to create documents with values which are of these types. To create these data types, you can use strings starting with a single `$`, followed by a conversion function name, followed by a `:` and finally the value as a string.
+The request body is parsed using [mongodb-extjson](https://github.com/mongodb-js/mongodb-extjson/tree/v3.0.3), so data types that are native to MongoDB but not supported by the JSON format can also be specified. The [Extended JSON documentation](https://github.com/mongodb/specifications/blob/master/source/extended-json.rst) has a detailed specification of all data types. A few common ones are described here:
 
-We will add more data types, but for the moment, this is how you can create some of these data types.
-
-| Type       | Function  | Example                                      | Resulting Value |
-| ---------- | --------- | -------------------------------------------- | ----------------
-| ObjectId   | ObjectId  | { id: "$ObjectId:5ecce33370eef71be8ba4b5a" } | ObjectId("5ecce33370eef71be8ba4b5a") |
-| NumberLong | Long      | { num: "$Long:1584963168000" }               | NumberLong(1584963168000) |
-| Date       | Date      | { when: "$Date:2020-01-01" }                 | 2020-01-01T00:00:00.000Z |
-|            |           | { when: "$Date:2020-01-01T23:12:45Z" }       | 2020-01-01T23:12:45.000Z |
-| String     | String    | { asis: "$String:$Long:23423" }              | "$Long:23423" |
-
-The function names are case insensitive. If the function name does not match any of the above, or if there is no `:` character in the string, the original string value will be retained. The function `$String` lets you create a string value exactly as specified, without giving special interpretations like the first three cases.
-
-In addition, if the value is a string and matches an ISO Date pattern like `2020-01-01T23:12:45Z` it will automatically be converted to a date, even without a function specification.
+| Type       | Example                                                | Resulting Value |
+| ---------- | ------------------------------------------------------ | ---------------- |
+| ObjectId   | { id: { "$oid: "5ecce33370eef71be8ba4b5a" }            | ObjectId("5ecce33370eef71be8ba4b5a") |
+| NumberLong | { num: { "$numberLong": "1584963168000" }              | NumberLong(1584963168000) |
+| Date       | { when: { "$date": "2020-01-01T12:13:14.123Z" }        | ISODate("2020-01-01T12:13:14.123Z") |
+|            | { when: { "$date": { "numberLong": "1593159811000" } } | ISODate("2020-06-26T08:23:31Z") |
