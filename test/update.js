@@ -60,31 +60,31 @@ describe('Update tests', () => {
 
   it('should update many', async () => {
     // Prepare
-    const toInsertMany = [
+    const orig = [
       { _id: 'id-1', value: 1, updated: false },
       { _id: 'id-2', value: 2, updated: false },
     ];
-    await db.collection(collection).insertMany(toInsertMany);
+    await db.collection(collection).insertMany(orig);
     // Do
-    const toUpdateMany = [
+    const changes = [
       { _id: 'id-1', updated: true, new: 1 },
       { _id: 'id-2', updated: true, new: 2 },
     ];
     const res = await request(app)
       .patch(`/${collection}`)
-      .send(toUpdateMany);
+      .send(changes);
     expect(res.statusCode).to.equal(200);
     expect(res.body.result.ok).to.equal(1);
-    expect(res.body.modifiedCount).to.equal(toUpdateMany.length);
+    expect(res.body.modifiedCount).to.equal(changes.length);
     // Check
     const updated = await db.collection(collection).find().toArray();
-    expect(updated.length).to.equal(toUpdateMany.length);
-    expect(updated[0].update).to.equal(toUpdateMany[0].update);
-    expect(updated[1].new).to.equal(toUpdateMany[1].new);
-    expect(updated[0].value).to.equal(toInsertMany[0].value); // original, untouched
+    expect(updated.length).to.equal(changes.length);
+    expect(updated[0].update).to.equal(changes[0].update);
+    expect(updated[1].new).to.equal(changes[1].new);
+    expect(updated[0].value).to.equal(orig[0].value); // original, untouched
     // Cleanup
     const result = await db.collection(collection).deleteMany({});
-    expect(result.deletedCount).to.equal(toInsertMany.length);
+    expect(result.deletedCount).to.equal(orig.length);
   });
 
   it('should fail to update many non-array', async () => {
@@ -94,18 +94,20 @@ describe('Update tests', () => {
       .send(update);
     expect(res.statusCode).to.equal(400);
     expect(res.body.status).to.equal('error');
+    expect(res.body.message).to.have.string('must be an array');
   });
 
   it('should fail to update many without _id', async () => {
-    const toUpdateManyNoId = [
+    const changes = [
       { _id: 'id-2', update: 4, updated: true },
       { update: 5, updated: true },
     ];
     const res = await request(app)
       .patch(`/${collection}`)
-      .send(toUpdateManyNoId);
+      .send(changes);
     expect(res.statusCode).to.equal(400);
     expect(res.body.status).to.equal('error');
+    expect(res.body.message).to.have.string('Missing _id');
   });
 
   it('should fail to update one non-existent', async () => {
@@ -128,5 +130,6 @@ describe('Update tests', () => {
       .send(array);
     expect(res.statusCode).to.equal(400);
     expect(res.body.status).to.equal('error');
+    expect(res.body.message).to.have.string('must be an object');
   });
 });

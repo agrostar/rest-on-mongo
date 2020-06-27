@@ -1,11 +1,12 @@
 {
   "name": "rest-on-mongo",
-  "version": "2.1.0",
+  "version": "2.1.1",
   "description": "A simple REST API layer over MongoDB",
   "main": "index.js",
   "scripts": {
     "start": "node index.js",
     "start:dev": "nodemon index.js",
+    "start:debug": "nodemon --exec 'node --inspect' index.js",
     "test": "mocha",
     "lint": "eslint ."
   },
