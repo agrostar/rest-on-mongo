@@ -39,10 +39,11 @@ describe('Create tests', () => {
   it('should create one', async () => {
     const dateMillis = '1593159811000';
     const dateString = '2020-01-01T12:13:14.123Z';
+    const longString = '1584963168123123000';
     const toCreate = {
       _id: 'id-1',
       testNumber: 11,
-      testLong: { $numberLong: '1584963168123123123' },
+      testLong: { $numberLong: longString },
       testObjectId: { $oid: '5ec7cb151a1878fbefce4119' },
       testDateMillis: { $date: { $numberLong: dateMillis } },
       testDateString: { $date: dateString },
@@ -59,7 +60,7 @@ describe('Create tests', () => {
     // Check
     const created = await db.collection(collection).findOne({ _id: 'id-1' });
     expect(created.testObjectId).to.be.a('Object').and.have.property('_bsontype', 'ObjectID');
-    assert(created.testLong.equals(Long.fromString('1584963168123123123')), 'Not a long');
+    assert(created.testLong.equals(Long.fromString(longString)), 'Not a long');
     expect(created.testDateMillis.getTime())
       .to.equal(new Date(parseInt(dateMillis, 10)).getTime());
     expect(created.testDateString.getTime()).to.equal(new Date(dateString).getTime());
