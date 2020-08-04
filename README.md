@@ -59,18 +59,18 @@ All the configuration is in environment variables. You can set these using `expo
 
 | Variable name        | DBs      | Default               | Notes |
 | -------------------- | -------- | --------------------- |------ |
-| `AUTH_TOKEN`         | Any      | No auth               | Authentication token (or API Key) |
-| `BASE`               | Any      |                       | The base endpoint for the API set, eg, `/api/v1` |
+| `AUTH_TOKEN`         | Any      | (No auth)             | Authentication token (or API Key) |
+| `BASE`               | Any      | /                     | The base endpoint, e.g., `/api/v1` |
 | `PORT`               | Any      | 8000                  | HTTP Port to start the server on |
-| `SERVER`             | Single   | `mongodb://localhost` | MongoDB connection URI. |
-| `DB`                 | Single   | `test`                | Name of the database |
-| `READ_ONLY`          | Single   |                       | Exposes only GET methods |
+| `READ_ONLY`          | Any      | no                    | Exposes only GET methods |
+| `SERVER`             | Any      | `mongodb://localhost` | MongoDB connection URI |
+| `DB`                 | Single   | `test`                | Name of the one and only database |
 | `PREFIXES`           | Multiple |                       | A comma separated list of prefixes |
-| `SERVER_<prefix>`    | Multiple | `mongodb://localhost` | Connection URI for prefix `<prefix>` |
-| `DB_<prefix>`        | Multiple | `test`                | Name of the database for prefix `<prefix>` |
-| `READ_ONLY_<prefix>` | Multiple |                       | Exposes only GET methods for the database |
+| `READ_ONLY_<prefix>` | Multiple | `READ_ONLY`           | Overrides READ_ONLY per `<prefix>` |
+| `SERVER_<prefix>`    | Multiple | `SERVER`              | Overrides SERVER per `<prefix>` |
+| `DB_<prefix>`        | Multiple | `<prefix>`            | Name of the database for `<prefix>` |
 
-#### Example 1
+#### Example 1 (Multiple servers and DBs)
 
 Contents of the `.env` file:
 
@@ -98,7 +98,7 @@ And, to access the same collection in the `content` database in the remote serve
 curl -H 'Authorization: Bearer secret' http://localhost:3000/remote-content/example/1
 ```
 
-#### Example 2
+#### Example 2 (Single)
 
 ```
 SERVER=mongodb://user:password@db.example.com
@@ -115,9 +115,19 @@ In this mode, to get a document, this is what you would do:
 curl http://localhost:8000/api/v1/example/1
 ```
 
+#### Example 3 (Multiple DBs in one server)
+
+```
+SERVER=mongodb://user:password@db.example.com
+PREFIXES=hr,sales
+DB_hr=humanresources
+# DB_sales=sales
+```
+
+This will configure a server with no authentication in the multiple database mode, with a single server. The `DB_xxx` environment variable is not required since it matches the prefix, whereas the `DB_hr` variable is required.
+
 #### Notes
 
-   * If `PREFIXES` is defined, the variables `SERVER` and `DB` will be ignored, giving preference to the multiple database mode of operation.
    * Multiple prefixes can connect to the same server+database. Although supported, this is useless.
    * None of the environment variables are required. A server as in the Quick Start section above will be started if no environment variables are found.
    * Since the shell does not allow usage of the dash (`-`) character in environment variable names, you should use an `_` instead of `-` in the names where there is a dash in the prefix (which is indeed allowed).

@@ -1,6 +1,6 @@
 {
   "name": "rest-on-mongo",
-  "version": "2.1.2",
+  "version": "2.2.0",
   "description": "A simple REST API layer over MongoDB",
   "main": "index.js",
   "scripts": {
@@ -41,7 +41,7 @@
     "eslint-config-airbnb-base": "^14.1.0",
     "eslint-plugin-import": "^2.20.2",
     "mocha": "^8.0.1",
-    "nodemon": "^2.0.2",
+    "nodemon": "^2.0.4",
     "supertest": "^4.0.2"
   },
   "bin": {
