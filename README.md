@@ -50,10 +50,11 @@ This will return the document `{ "_id": 1, "value": "some value" }` which was ju
 
 ### Configuration
 
-The server can be started in one of two modes:
+The server can be started in one of the following modes:
 
    1. Single database (as in the above example), which can be accessed like `http://localhost:8000/collection/_id`
    1. Multiple databases, each under a prefix in the route, accessed like `http://localhost:8000/prefix/collection/_id`
+   1. Multiple servers and databases in a hierarchy of roures accessed like `http://localhost:8000/server-name/database/collection/_id`
 
 All the configuration is in environment variables. You can set these using `export VAR=value` or, write the definitions in a file called `.env` since we use [dotenv](https://www.npmjs.com/package/dotenv).
 
@@ -69,6 +70,8 @@ All the configuration is in environment variables. You can set these using `expo
 | `READ_ONLY_<prefix>` | Multiple | `READ_ONLY`           | Overrides READ_ONLY per `<prefix>` |
 | `SERVER_<prefix>`    | Multiple | `SERVER`              | Overrides SERVER per `<prefix>` |
 | `DB_<prefix>`        | Multiple | `<prefix>`            | Name of the database for `<prefix>` |
+
+Note that prefixes can also be of the form `server-name/db`, in which case the `<prefix>` for all `SERVER` env variables will become the `server` part and that for the `DB` ones will become the `db` part. If the prefixes are of the form `a,b,c*x,y,z` it will be expanded to a cartesian product like `a/x`, `a/y` etc.
 
 #### Example 1 (Multiple servers and DBs)
 
@@ -126,11 +129,28 @@ DB_hr=humanresources
 
 This will configure a server with no authentication in the multiple database mode, with a single server. The `DB_xxx` environment variable is not required since it matches the prefix, whereas the `DB_hr` variable is required.
 
+#### Example 4 (Same DBs in multiple servers)
+
+```
+PREFIXES=prod/sales,prod/warehouse,staging/sales,staging/warehouse,local/sales,local/warehouse
+# Can also be written as PREFIXES=prod,staging,local*sales,warehouse
+SERVER_prod=mongodb+srv://user:password@cluster0-xxxx.mongodb.net
+SERVER_staging=mongodb://user:password@db.example.com
+# SERVER_local=localhost
+READ_ONLY_prod_sales=yes
+```
+
+In this mode, this is what you would do to fetch an invoice document from the sales database in the production server:
+
+```
+curl http://localhost:8000/prod/sales/invoices/INV0001
+```
+
 #### Notes
 
    * Multiple prefixes can connect to the same server+database. Although supported, this is useless.
    * None of the environment variables are required. A server as in the Quick Start section above will be started if no environment variables are found.
-   * Since the shell does not allow usage of the dash (`-`) character in environment variable names, you should use an `_` instead of `-` in the names where there is a dash in the prefix (which is indeed allowed).
+   * Since the shell does not allow usage of special characters (`-`, `.` and `/`) in environment variable names, you should use an `_` instead of `-` in the names where there is these characters exist in the prefix (which is indeed allowed).
 
 ## Using rest-on-mongo as a library
 
