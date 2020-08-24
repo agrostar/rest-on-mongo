@@ -62,6 +62,7 @@ All the configuration is in environment variables. You can set these using `expo
 | -------------------- | -------- | --------------------- |------ |
 | `AUTH_TOKEN`         | Any      | (No auth)             | Authentication token (or API Key) |
 | `BASE`               | Any      | /                     | The base endpoint, e.g., `/api/v1` |
+| `MAX_BODY_SIZE`      | Any      | 10mb                  | `limit` for body-parser |
 | `PORT`               | Any      | 8000                  | HTTP Port to start the server on |
 | `READ_ONLY`          | Any      | no                    | Exposes only GET methods |
 | `SERVER`             | Any      | `mongodb://localhost` | MongoDB connection URI |
