@@ -12,7 +12,7 @@ ENV PATH=$PATH:/home/node/.npm-global/bin
 
 # Install the latest version of rest-on-mongo. There is little use for anything else.
 # Also, clean the npm cache to get rid of unwanted files within the image.
-RUN npm install -g rest-on-mongo && npm cache --force clean
+RUN npm install -g rest-on-mongo@2.4.0 && npm cache --force clean
 
 ENTRYPOINT ["rest-on-mongo"]
 
