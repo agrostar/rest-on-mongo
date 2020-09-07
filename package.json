@@ -1,6 +1,6 @@
 {
   "name": "rest-on-mongo",
-  "version": "2.4.0",
+  "version": "2.4.1",
   "description": "A simple REST API layer over MongoDB",
   "main": "index.js",
   "scripts": {
@@ -32,7 +32,7 @@
     "bson": "^4.0.4",
     "dotenv": "^8.2.0",
     "express": "^4.17.1",
-    "mongodb": "^3.5.9",
+    "mongodb": "^3.6.1",
     "query-params-mongo": "^1.1.1"
   },
   "devDependencies": {
