@@ -35,6 +35,8 @@ npx rest-on-mongo
 
 You will now have a full-fledged REST API server, using the default configuration: an unauthenticated server on port 8000 which will give you access to a database called `test` in a MongoDB instance running on the localhost.
 
+When you need the server's CORS to be disabled you can do this by setting the `DISABLE_CORS` environment variable to `"true"`. By default CORS will be enabled.
+
 ### Try it out
 
 Insert a document in a collection called `example` in the database `test`:
