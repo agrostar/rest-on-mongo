@@ -1,19 +1,12 @@
 # rest-on-mongo
 
-[![npm version](https://badge.fury.io/js/rest-on-mongo.svg)](https://www.npmjs.com/package/rest-on-mongo)
-[![downloads](https://img.shields.io/npm/dt/rest-on-mongo.svg)](https://npmjs.org/rest-on-mongo)
-
 rest-on-mongo is a REST API layer over MongoDB.
 
 ## About
 
 The need for a REST API interface to MongoDB came up when we wanted to access our MongoDB database directly from Google Sheets. The solutions out there were either using Stitch (a service provided by a hosted version of MongoDB) or using tools no longer maintained, or tools that did not support bulk updates and multiple databases. None of them worked for us. And we felt that this was such a common need that there *had* to be an open-source package for it.
 
-So we built it.
-
-### Upgrading from v1.x.x
-
-v2.0 has breaking changes in the way BSON data types are handled. We no longer support automatic conversion of date-like strings to Date objects. The v1.0 functions for converting strings starting with a `$` character to specific data types are also no longer supported.
+So we built it. Now with JWT support!
 
 ### Disclaimer
 
