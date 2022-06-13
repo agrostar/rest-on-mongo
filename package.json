@@ -1,6 +1,6 @@
 {
   "name": "rest-on-mongo",
-  "version": "3.0.0",
+  "version": "3.0.1",
   "description": "A simple REST API layer over MongoDB forked from agrostar with JWT for users",
   "main": "index.js",
   "scripts": {
